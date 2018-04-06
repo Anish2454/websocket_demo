@@ -1,1 +1,73 @@
-Helloo
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Websockets </title>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+  </head>
+
+  <body>
+    <center>
+      <h1> Websockets </h1>
+      <h2> By: Anish Shenoy and Jasper Cheung </h2>
+    <br><br><br>
+    <h3> Check out our presentation below (Scroll down to the bottom of the page for a demo)</h3>
+    <object data="Websockets.pdf" type="application/pdf" width="100%" height="1000px">
+      <p>Alternative text - include a link <a href="myfile.pdf">to the PDF!</a></p>
+    </object>
+    <br><br><br>
+    <h3> DEMO </h3>
+			<div id="page-wrapper">
+
+				<ul id="messages"></ul>
+
+				<textarea id="message" placeholder="Write your message here..." required></textarea>
+				<br><br>
+				<button type="submit" id="submit">Send Message</button>
+				<button type="button" id="close">Close Connection</button>
+			</div>
+		</center>
+
+		<script type="text/javascript" charset="utf-8">
+
+			// Create a new WebSocket.
+	    var socket = io.connect('http://localhost:5000');
+
+	    socket.on('connect', function() {
+					console.log("Socket Connected");
+					// Send the message
+	        socket.emit('connected', {data: 'I\'m connected!'});
+	    });
+
+			var sendButton = document.getElementById("submit");
+			var text = document.getElementById("message");
+			var list = document.getElementById('messages');
+			var closeButton = document.getElementById("close");
+
+			var sendMsg = function(e){
+				console.log("Sending...");
+				socket.emit('msg', text.value);
+			}
+			sendButton.addEventListener("click", sendMsg);
+
+			//Close the Socket
+			var closeConnection = function(e){
+				console.log("Closing...");
+				socket.close();
+			}
+			closeButton.addEventListener("click", closeConnection);
+
+			/*
+			When a message is received the message event is fired.
+			This event includes a property called data that can be
+			used to access the contents of the message.
+			*/
+			socket.on('response', function(e){
+				console.log("received: ");
+				console.log(e);
+
+				messages.innerHTML += ("<li> " + e + "</li>");
+			});
+
+		</script>
+  </body>
+</html>
